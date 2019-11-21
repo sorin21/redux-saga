@@ -3,15 +3,22 @@ import ReactDOM from 'react-dom';
 import App from './components/App';
 import * as serviceWorker from './serviceWorker';
 import axios from 'axios';
-import {createStore} from 'redux';
+import {createStore, applyMiddleware} from 'redux';
 import {Provider} from 'react-redux'
+import createSagaMiddleware from 'redux-saga';
 
+import rootSaga from './sagas'
 import reducers from './reducers';
 
-const store = createStore(reducers);
+// import 'bootstrap/dist/css/bootstrap.min.css';
+
+const sagaMiddleware =  createSagaMiddleware();
+const store = createStore(reducers, applyMiddleware(sagaMiddleware));
+
+sagaMiddleware.run(rootSaga);
 
 axios.defaults.withCredentials = true;
-axios.defaults.baseUrl = 'https://rem-rest-api.herokuapp.com/api/users';
+axios.defaults.baseUrl = 'https://rem-rest-api.herokuapp.com/api';
 
 ReactDOM.render(
   <Provider store={store}>
